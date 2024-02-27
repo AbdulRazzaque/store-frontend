@@ -1,0 +1,10 @@
+.icondiv{
+display:flex;
+justify-content: flex-end;
+margin-right: 24px;
+bottom: 34px;
+}
+.exporticon{
+    font-size: 34px !important;
+    cursor:pointer;
+}
