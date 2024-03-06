@@ -11,3 +11,9 @@ export const updateSocket =(messages)=>{
         payload:messages
     }
 }
+
+
+export const sendData =(data)=>({
+    type:'SEND_DATA',
+    payload:data
+})

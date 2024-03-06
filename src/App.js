@@ -22,6 +22,8 @@ import Heamotolgy from './components/central section/Heamotolgy';
 import Biochemistry from './components/central section/Biochemistry';
 import HPLC from './components/central section/HPLC';
 import AAS from './components/central section/AAS';
+import Order from './pages/Order';
+import Orderpdf from './components/Order/Orderpdf';
  export const ThemeContext = createContext();
 function App() {
 
@@ -65,6 +67,9 @@ function App() {
      <Route exact path="/Biochemistry" component={Biochemistry} />
      <Route exact path="/HPLC" component={HPLC} />
      <Route exact path="/AAS" component={AAS} />
+     {/*====================================Order section ================================================================================ */}
+     <Route exact path="/Order" component={Order} />
+     <Route exact path="/Orderpdf" component={Orderpdf} />
 
 
         </Switch>

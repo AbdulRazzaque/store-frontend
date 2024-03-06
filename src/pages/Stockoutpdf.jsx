@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import './pdf.scss';
-import logo from '../image/logo.png';
+
 import header from '../image/header.png';
 import foot from '../image/foot.png';
 
 const Stockoutpdf = () => {
-  useEffect(() => {
-    window.print();
-  }, []);
+  useEffect(()=>{
+    setTimeout(()=>{
+      
+      window.print()
+    },1000)
+  },[])
 
   const TableData = [
     { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },

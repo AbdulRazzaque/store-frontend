@@ -8,7 +8,7 @@ import storageSession from 'redux-persist/lib/storage/session'
 //     (inboundState, key) => JSOG.encode(inboundState),
 //     (outboundState, key) => JSOG.decode(outboundState),
 // )
-
+  
 const persistConfig = {
     key:'root',
     storage:storageSession,

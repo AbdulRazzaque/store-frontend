@@ -8,7 +8,7 @@ const socketPersistConfig = {
     key: 'socket',
     storage: storage,
     blacklist: ['state']
-  }
+  } 
 
 export default combineReducers({
     EventUser:userReducer,

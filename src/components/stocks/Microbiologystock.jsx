@@ -1,6 +1,6 @@
 
 
-import React, { Fragment, useState } from 'react'
+import React, {  useState } from 'react'
 import './stock.css'
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -9,11 +9,17 @@ import Darkmode from '../Darkmode';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx'
 import GetAppIcon from '@mui/icons-material/GetApp';
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { sendData } from '../redux/socket/socketActions';
+import { useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 const Microbiologystock = () => {
   const [display, setDisplay] = React.useState(false);
+  const [selectedRows,setSelectedRows]= useState([])
   const [department, setDepartment] = React.useState('');
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [rows ,setRows]= useState( [
     { id: 1, itemcode: "C123", productName: "Vitamin C", quantity: "23", expiry: "2/3/2024", sku: "2342", lotNumber: "343223", manufacturer: "GPS" },
     { id: 2, itemcode: "P456", productName: "Painkiller", quantity: "50", expiry: "5/12/2023", sku: "9876", lotNumber: "998877", manufacturer: "PharmaCo" },
@@ -36,11 +42,18 @@ const Microbiologystock = () => {
     { id: 19, itemcode: "S444", productName: "Syringes", quantity: "200", expiry: "12/1/2024", sku: "4444", lotNumber: "334455", manufacturer: "MediEquip" },
     { id: 20, itemcode: "B789", productName: "Burn Cream", quantity: "30", expiry: "3/8/2024", sku: "3333", lotNumber: "112233", manufacturer: "BurnAid" },
   ])
-  const handleChange = (event) => {
-    setDepartment(event.target.value);
-  };
+ 
 
-
+  const labName = 'Microbiology Lab'
+  const handelClick = ()=>{
+    const dataToSend = selectedRows.map(row=>({
+      ...row,
+      labName:labName
+    }))
+    dispatch(sendData(dataToSend));
+  history.push('/Order')
+    // console.log(dataToSend)
+  }
 
   const columns=[
     {field:"id",headerName:"S.N",width:70},
@@ -98,7 +111,20 @@ const Microbiologystock = () => {
           },
         }}
         pskuSizeOptions={[5, 10]}
+        checkboxSelection
+        onSelectionModelChange={(ids)=>{
+          const selectedIDs = new Set(ids);
+          const selectedRows = rows.filter((row)=>
+          selectedIDs.has(row.id),
+          )
+          setSelectedRows(selectedRows)
+        }}
+        {...rows}
+      
       />
+    </div>
+    <div className="text-center my-5">
+  <Button variant="contained" onClick={handelClick}> Order </Button> 
     </div>
         </div>
        
@@ -106,6 +132,6 @@ const Microbiologystock = () => {
         </div>
   )
 }
-
+ 
 export default Microbiologystock
 

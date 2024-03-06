@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 // import './stock.css'
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -7,11 +7,17 @@ import Darkmode from '../Darkmode';
 import { saveAs } from 'file-saver';
 import * as XLSX from 'xlsx'
 import GetAppIcon from '@mui/icons-material/GetApp';
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
+import { sendData } from '../redux/socket/socketActions';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
+import { useDispatch } from 'react-redux';
 const Biochemistry = () => {
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [display, setDisplay] = React.useState(false);
   const [department, setDepartment] = React.useState('');
+  const [selectedRows,setSelectedRows]= useState([])
   const [rows ,setRows]= useState( [
     { id: 1, itemcode: "C123", productName: "Vitamin C", quantity: "23", expiry: "2/3/2024", sku: "2342", lotNumber: "343223", manufacturer: "GPS" },
     { id: 2, itemcode: "P456", productName: "Painkiller", quantity: "50", expiry: "5/12/2023", sku: "9876", lotNumber: "998877", manufacturer: "PharmaCo" },
@@ -34,11 +40,17 @@ const Biochemistry = () => {
     { id: 19, itemcode: "S444", productName: "Syringes", quantity: "200", expiry: "12/1/2024", sku: "4444", lotNumber: "334455", manufacturer: "MediEquip" },
     { id: 20, itemcode: "B789", productName: "Burn Cream", quantity: "30", expiry: "3/8/2024", sku: "3333", lotNumber: "112233", manufacturer: "BurnAid" },
   ])
-  const handleChange = (event) => {
-    setDepartment(event.target.value);
-  };
-
-
+ 
+  const labName = 'Bio Chemistry Lab'
+  const handelClick = ()=>{
+    const dataToSend = selectedRows.map(row=>({
+      ...row,
+      labName:labName
+    }))
+    dispatch(sendData(dataToSend));
+  history.push('/Order')
+    // console.log(dataToSend)
+  }
 
   const columns=[
     {field:"id",headerName:"S.N",width:70},
@@ -87,16 +99,29 @@ const Biochemistry = () => {
       <Tooltip title="Export in xl"> <GetAppIcon className='exporticon' onClick={handleExport} /></Tooltip> 
         </div>
         <div style={{ height: '100%', width: '100%' }}>
-      <DataGrid
+        <DataGrid
         rows={rows}
         columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { psku: 0, pskuSize: 5 },
-          },
+        pageSizeOptions={[5, 10, 25]}
+        paginationMode='client'
+        paginationModel={{
+          pageSize: 5,
+          page: 0,
         }}
-        pskuSizeOptions={[5, 10]}
+        pagination={true}
+        checkboxSelection
+        onSelectionModelChange={(ids)=>{
+          const selectedIDs = new Set(ids);
+          const selectedRows = rows.filter((row)=>
+          selectedIDs.has(row.id),
+          )
+          setSelectedRows(selectedRows)
+        }}
+        {...rows}
       />
+    </div>
+    <div className="text-center my-5">
+  <Button variant="contained" onClick={handelClick}> Order </Button> 
     </div>
         </div>
        

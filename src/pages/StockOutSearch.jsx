@@ -7,8 +7,7 @@ import Darkmode from '../components/Darkmode';
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+
 import dayjs from 'dayjs';
 const StockOutSearch = () => {
 
@@ -39,20 +38,12 @@ const StockOutSearch = () => {
         {doc:2,department:'Genetic',itemCode:3423, itemDescription:"Yellow-Tip",quantity:1064,expiryDate:'12-2-2025',requestby:'Dr.Ram sing'}
     ]
 // ================================================================open Dialog api & Update code here =====================================================
-   const  handleOpenDialog =(rowdata)=>{
-    setUpdate(rowdata)
-    setShowDialog(true); // Open the dialog
-    
-    
-   }
+
     const updateData=(e)=>{
         setUpdate({...update,[e.target.name]:e.target.value});
     }
 // =======================================================================Delete Dialog and api code here ======================================================================
-  const handleDeleteDialog = (rowdata)=>{
-    // setDeleteRow(rowdata)
-    setAlert(true)
-}
+
     return (
         <div className="row">
         <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">

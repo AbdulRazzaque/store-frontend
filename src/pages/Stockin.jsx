@@ -265,8 +265,7 @@ const Stockin = () => {
             <TableCell >Delete</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-         
+        <TableBody> 
             {
                 rows.map((row)=>(
                     <TableRow key={row.doc}>
