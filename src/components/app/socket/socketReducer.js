@@ -9,9 +9,17 @@ const userReducer = (state=initialStateSocket,action)=>{
         case 'UPDATE_SOCKET':
             return {messages:[...state.messages,action.payload]}
         case 'SEND_DATA':
-        // return{messages:[...state.messages,action.payload]}
         return{messages:[action.payload]}
-        // return{messages:[...state.messages,state.push(action.payload)]}
+        case 'SET_TOKEN':
+      return {
+        ...state,
+        token: action.payload
+      };
+    case 'CLEAR_TOKEN':
+      return {
+        ...state,
+        token: null
+      };
         default:
             return state;
     }

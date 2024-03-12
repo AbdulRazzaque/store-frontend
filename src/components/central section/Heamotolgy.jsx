@@ -11,7 +11,7 @@ import { Button,Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
-import { sendData } from '../redux/socket/socketActions';
+import { sendData } from '../app/socket/socketActions';
 const Heamotolgy = () => {
   const dispatch = useDispatch();
   const history = useHistory();

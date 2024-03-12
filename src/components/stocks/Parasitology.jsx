@@ -11,7 +11,7 @@ import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import { useDispatch } from 'react-redux';
-import { sendData } from '../redux/socket/socketActions';
+import { sendData } from '../app/socket/socketActions';
 const Parasitology = () => {
   const [display, setDisplay] = React.useState(false);
   const dispatch = useDispatch();

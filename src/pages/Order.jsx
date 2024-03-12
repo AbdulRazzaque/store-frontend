@@ -8,7 +8,8 @@ import Dashhead from "../components/Dashhead";
 import { Autocomplete, Button, TextField } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux'
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import { sendData } from '../components/redux/socket/socketActions';
+import { sendData } from '../components/app/socket/socketActions';
+
 import {  useHistory } from 'react-router-dom/cjs/react-router-dom';
 const Order = () => {
     const [display, setDisplay] = React.useState(false);

@@ -1,30 +1,47 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Dashhead from "../components/Dashhead";
 import Darkmode from "../components/Darkmode";
-import { Button, TextField } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
+import { useForm } from 'react-hook-form' 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import axios from 'axios'
+import Updateproduct from "../components/update/Updateproduct";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Addproduct = () => {
-  // const { darkMode } = useContext(ThemeContext);
   const [display, setDisplay] = React.useState(false);
+  const [data,setData]=useState([])
+  const [flag,setFlag] = React.useState(false)
+  const [update,setUpdate]=useState([])
+  const [showDialog,setShowDialog]=useState(false)
+  const [alert, setAlert] = useState(false);
+  // ==============================================================================================
+  const { register, handleSubmit, formState: { errors } } = useForm();
+  const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiX2lkIjoiNjVlODZiNzZmOTk0ZmQzZTdmNDliMjJiIiwiaWF0IjoxNzA5NzkzMDcwfQ.siBn36zIBe_WmmIfuHMXI6oq4KMJ4dYaWQ6rDyBBtEo"
+
+// ===============================================================================================================
   const columns = [
     { field: 'id', headerName: 'S.N', width: 70 },
-    { field: 'itemdescription', headerName: 'Item description', width: 180 },
-    { field: 'physicallocation', headerName: 'Physical location', width: 130 },
+    { field: 'itemCode', headerName: 'item Code', width: 100 },
+    { field: 'productName', headerName: 'Item description', width: 180 },
+    { field: 'physicalLocation', headerName: 'Physical location', width: 130 },
     { field: 'sku', headerName: 'S.K.U', width: 130 },
-    { field: 'lotnumber', headerName: 'Lot number', width: 130 },
-    { field: 'manufacture', headerName: 'Manufacture', width: 130 },
-    { field: 'suppliername', headerName: 'Supplier name', width: 130 },
+    { field: 'lotNumber', headerName: 'Lot number', width: 130 },
+    { field: 'manufacturer', headerName: 'Manufacture', width: 130 },
+    { field: 'supplierName', headerName: 'Supplier name', width: 130 },
+    { field: 'unit', headerName: 'unit', width: 100 },
+    { field: 'addModel', headerName: 'Model', width: 130 },
     {
       title: "Action",
       field: "Action",
       width: 100,
-      renderCell: () => (
+      renderCell: (params) => (
         <Fragment>
-          <Button >
+          <Button   onClick={() => updateRowData(params.row)}>
             <EditIcon />
           </Button>
         </Fragment>
@@ -36,7 +53,7 @@ const Addproduct = () => {
       width: 100,
       renderCell: () => (
         <Fragment>
-          <Button color="error" >
+          <Button color="error"  onClick={() => setAlert(true)}>
             <DeleteIcon />
           </Button>
         </Fragment>
@@ -45,19 +62,128 @@ const Addproduct = () => {
   
   ];
   
-  const rows = [
-    { id: 1, itemdescription: 'Yellow tip', physicallocation: '13B', sku: 3544,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-    { id: 2, itemdescription: 'Alcohol Mexo', physicallocation: '23B', sku: 2342 ,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri"},
-    { id: 3, itemdescription: 'Vitamin A', physicallocation: '54B', sku: 45432,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-    { id: 4, itemdescription: 'B Bag', physicallocation: '13B', sku: 1624 ,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri"},
-    { id: 5, itemdescription: '10ml Syringe', physicallocation: '13B', sku: 43234,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-    { id: 6, itemdescription: 'De Tox-L', physicallocation: '13B', sku: 14450,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-    { id: 7, itemdescription: 'Facemask Normal ', physicallocation: '13B', sku: 4553,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-    { id: 8, itemdescription: 'Ornipura', physicallocation: '13B', sku: 3633,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-    { id: 9, itemdescription: 'Buscopan', physicallocation: '13B', sku: 65334,lotnumber:32455,manufacture:"Glovet",suppliername:"Dousri" },
-   
-  ];
+// =========================================Get Api===============================================================================================
+ 
+  const getAlldata = ()=>{
   
+    axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/product/getAllProducts`)
+    .then(res=>{
+      let arr = res.data.result.map((item,index)=>{
+        const fieldsToCheck = ['supplierName', 'productName', 'sku', 'lotNumber', 'manufacturer', 'physicalLocation', 'unit','addModel'];
+        fieldsToCheck.forEach(field=>{
+          if(item.itemCode.includes(item[field])){
+            item.itemCode = item.itemCode.replace(item[field],'')
+          }
+        })
+        return {...item, id:index +1}
+      })
+      setData(arr)
+
+    })
+
+}
+// =========================================Post Api======================================================================
+
+const onSubmit = async(data,event) => {
+     
+  try {
+      const res= await axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/product/createProduct`, data,
+      {headers:{token:`${accessToken}`}})
+      .then(response=>{
+      console.log(response, 'res')
+      toast(response.data.msg,{
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      })
+      setFlag(!flag)
+        event.target.reset();
+    }).catch(error => {
+      toast(error.response.data,{
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark"
+      })
+    }
+    );
+    getAlldata()
+  } catch (error) {
+      alert(error)
+      
+  }
+  
+;
+}
+//=======================================================update code & api here =======================================
+
+const updateRowData= async(params)=>{
+  // console.log(params,'cheack in update data in Add Product')
+ setUpdate(params)
+   setShowDialog(true)
+}
+const changeRoweData=(e)=>{
+  setUpdate({...update,[e.target.name]:e.target.value})
+  console.log(update)
+
+}
+const updateRow = async() =>{
+
+try {
+   
+  await  axios.put(`${process.env.REACT_APP_DEVELOPMENT}/api/product/updateProduct/${update._id}`,update,
+  {headers:{token:`${accessToken}`}})
+  .then(response=>{
+  console.log('Response',response)
+  // apiRef.current.updateRows([update])
+  })
+  getAlldata()
+  
+  setShowDialog(false)
+  } catch (error) {
+  console.log(error)
+  } 
+  
+  
+  }
+
+//=======================================================Delete code & api here ==============================================================
+const deleteRow = async (update) => {
+
+  try {
+    await axios
+      .delete(
+        `${process.env.REACT_APP_DEVELOPMENT}/api/product/deleteProduct/${update._id}`,update,
+        {headers:{token:`${accessToken}`}})
+        .then(response=>{
+        console.log('Response',response)
+        // apiRef.current.updateRows([update])
+        })
+
+        getAlldata();
+      
+    setAlert(false);
+  } catch (error) {
+    console.log(error);
+  }
+};
+// ==================================================Call api==================================================================================
+useEffect(()=>{
+  getAlldata()
+},[])
+
+// console.log(update)
+// ===================================================JSx code===============================================================================================================
+
   return (
     <div className="row">
     <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
@@ -80,77 +206,167 @@ const Addproduct = () => {
       <h1 className="my-5 title text-center">
       Add Product
         </h1>
-<form>
+{/* =============================================Delete Modal code===================================================================================================================================== */}
+{alert && (
+          <Dialog open={alert} style={{ height: 600 }}>
+            <DialogTitle>Delete Row</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                Are You sure You want to delete this.
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button variant="contained" onClick={() => deleteRow(update)}>
+                Yes
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => {
+                  setAlert(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </DialogActions>
+          </Dialog>
+        )}
 
+{/* =============================================Form code===================================================================================================================================== */}
+      <form className="space-y-4 my-6" onSubmit={handleSubmit(onSubmit)}>
+      <ToastContainer />
 
-        <div className="container d-flex  flex-column  align-items-center">
-          <div className="row my-2">
-            <div className="col">
-            <TextField id="outlined-basic" label="Item code" variant="outlined" 
-            sx={{width:250}} required
+      <div className="container d-flex flex-column align-items-center">
+        <div className="row my-2">
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Item code"
+              variant="outlined"
+              {...register("itemCode", { pattern: /^\S.*\S$/ })}
+              sx={{ width: 250 }}
+              required
             />
-            </div>
-            <div className="col">
-            <TextField id="outlined-basic" label="Enter product name" variant="outlined"  sx={{width:250}}  required/>
-           
-            </div>
-          
           </div>
-          <div className="row my-2">
-            <div className="col">
-            <TextField id="outlined-basic" label="Physical location" variant="outlined" 
-            sx={{width:250}} required
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Enter product name"
+              variant="outlined"
+              sx={{ width: 250 }}
+              required
+              {...register("productName", { pattern: /^\S.*\S$/ })}
             />
-            </div>
-            <div className="col">
-            <TextField id="outlined-basic" label="S.K.U" variant="outlined"  sx={{width:250}}  required/>
-           
-            </div>
-          
           </div>
-          <div className="row my-2">
-            <div className="col">
-            <TextField id="outlined-basic" label="Lot number" variant="outlined" 
-            sx={{width:250}} 
-            />
-            </div>
-            <div className="col">
-            <TextField id="outlined-basic" label="Manufacturer" variant="outlined"  sx={{width:250}}  required/>
-           
-            </div>
-          
-          </div>
-          <div className="row my-2">
-            <div className="col">
-            <TextField id="outlined-basic" label="Supplier name" variant="outlined" 
-            sx={{width:250}} 
-            required
-            />
-            </div>
-            <div className="col">
-            <TextField id="outlined-basic" label="Add model" variant="outlined"  sx={{width:250}}  required/>
-           
-            </div>
-          
-          </div>
-          <Button variant="contained" type="submit" className="my-5">Submit</Button>
         </div>
-        <div style={{ height: 400, width: '100%' }}>
-      <DataGrid
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: { psku: 0, pskuSize: 5 },
-          },
-        }}
-        pskuSizeOptions={[5, 10]}
-      />
-    </div>
-        </form>
-      
+        <div className="row my-2">
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Unit"
+              variant="outlined"
+              {...register("unit", { pattern: /^\S.*\S$/ })}
+              sx={{ width: 250 }}
+              required
+            />
+          </div>
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Physical location"
+              variant="outlined"
+              sx={{ width: 250 }}
+              required
+              {...register("physicalLocation", { pattern: /^\S.*\S$/ })}
+            />
+          </div>
+        </div>
+        <div className="row my-2">
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Lot number"
+              variant="outlined"
+              {...register("lotNumber", { pattern: /^\S.*\S$/ })}
+              sx={{ width: 250 }}
+            />
+          </div>
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Manufacturer"
+              variant="outlined"
+              sx={{ width: 250 }}
+              required
+              {...register("manufacturer", { pattern: /^\S.*\S$/ })}
+            />
+          </div>
+        </div>
+        <div className="row my-2">
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Supplier name"
+              variant="outlined"
+              {...register("supplierName", { pattern: /^\S.*\S$/ })}
+              sx={{ width: 250 }}
+              required
+            />
+          </div>
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="Add model"
+              variant="outlined"
+              sx={{ width: 250 }}
+              required
+              {...register("addModel", { pattern: /^\S.*\S$/ })}
+            />
+          </div>
+         
+        </div>
+        <div className="row my-2">
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="S.K.U"
+              variant="outlined"
+              sx={{ width: 250 }}
+              required
+              {...register("sku", { pattern: /^\S.*\S$/ })}
+            />
+          </div>
+    
+         
+        </div>
+        <Button variant="contained" type="submit" className="my-5">
+          Submit
+        </Button>
+      </div>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid
+          rows={data}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: { psku: 0, pskuSize: 5 },
+            },
+          }}
+          pskuSizeOptions={[5, 10]}
+          onRowClick={(item)=>setUpdate(item.row)}
+        />
+      </div>
+    </form>
+
         <Darkmode/>
         </div>
+        <Updateproduct
+        showDialog={showDialog}
+        update={update}
+        setShowDialog={setShowDialog}
+        changeRoweData={changeRoweData}
+        updateRow={updateRow}
+        />
        
         </div>
   )

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import {BrowserRouter} from 'react-router-dom'
 import {Provider} from 'react-redux'
-import {store,Persister} from './components/redux/Store'
+import {store,Persister} from './components/app/Store'
 import { createTheme,ThemeProvider } from '@mui/material/styles';
 import { PersistGate } from 'redux-persist/integration/react'
 

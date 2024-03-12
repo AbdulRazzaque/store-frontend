@@ -27,7 +27,7 @@ const Stockout = () => {
         { label: 'Microbiology'},
         { label: 'Central'},
         { label: 'Parasitology' },
-    ]
+    ] 
     const Product = [
         { label: 'G1243 - Yellow Tip'},
         { label: 'B343 - 10ml Syringe'},

@@ -9,7 +9,7 @@ import * as XLSX from 'xlsx'
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { Button, Tooltip } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { sendData } from '../redux/socket/socketActions';
+import { sendData } from '../app/socket/socketActions';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 import { useDispatch } from 'react-redux';
 
