@@ -3,8 +3,9 @@ import './pdf.scss';
 
 import header from '../image/header.png';
 import foot from '../image/foot.png';
+import moment from 'moment';
 
-const Stockoutpdf = () => {
+const Stockoutpdf = (props) => {
   useEffect(()=>{
     setTimeout(()=>{
       
@@ -12,58 +13,11 @@ const Stockoutpdf = () => {
     },1000)
   },[])
 
-  const TableData = [
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-    { id: 1,itemcode:"G123" ,itemdiscription: "Yellow-Tip", unit: "Box", quantity: "4" },
-  
-    // More data...
-  ];
+  const TableData = props.location.state.data
+  console.log(TableData,"print data")
+  // console.log(TableData[0].department)
+  console.log(moment.parseZone(TableData[0].date).local().format("DD/MM/YYYY"))
+
 
   return (
     <div className='container'>
@@ -84,8 +38,8 @@ const Stockoutpdf = () => {
                   </div>
                 </div>
                 <div className="row my-5 sideTitle">
-                  <div className="col text-left"><p><b>Date:</b> <span>2-3-2025</span></p></div>
-                  <div className="col text-right mr-5"><p><b>Department:</b> <span>Genitic</span></p></div>
+                  <div className="col text-left"><p><b>Date:</b> <span>{moment.parseZone(TableData[0].date).local().format("DD/MM/YYYY")}</span></p></div>
+                  <div className="col text-right mr-5"><p><b>Department:</b> <span>{TableData[0].department}</span></p></div>
                 </div>
               </th>
             </tr>
@@ -101,9 +55,9 @@ const Stockoutpdf = () => {
             {TableData.map((row, index) => (
               <tr key={index + 1} className='table-bordered'>
                 <td className='text-center table-bordered'>{index + 1}</td>
-                <td className='text-center table-bordered'>{row.itemcode}</td>
-                <td className='text-center table-bordered'>{row.itemdiscription}</td>
-                <td className='text-center table-bordered'>{row.unit}</td>
+                <td className='text-center table-bordered'>{row.product.itemCode}</td>
+                <td className='text-center table-bordered'>{row.productName}</td>
+                <td className='text-center table-bordered'>{row.product.unit}</td>
                 <td className='text-center table-bordered'>{row.quantity}</td>
               </tr>
             ))}
@@ -113,7 +67,7 @@ const Stockoutpdf = () => {
     <tr >
       <td colSpan="10">
         <div className="row sideTitle">
-          <div className="col text-left"><p><b>Requested by</b></p></div>
+          <div className="col text-left"><p><b>Requested by  <span>: {TableData[0].memberName}</span></b></p></div>
           <div className="col text-right mr-5"><p><b>Approved by</b></p></div>
         </div>
         <div className="row sideTitle my-5">

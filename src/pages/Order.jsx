@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 // import Dashhead from "./Dashhead";
@@ -11,14 +11,15 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import { sendData } from '../components/app/socket/socketActions';
 
 import {  useHistory } from 'react-router-dom/cjs/react-router-dom';
+import axios from 'axios';
 const Order = () => {
     const [display, setDisplay] = React.useState(false);
     const data = useSelector(state => state.socket.messages)
     // const chackdata = useSelector(state => state)
     console.log(data,'Chack lab name')
-  
+    const [allMember,setAllMember] = React.useState([])
     const [quantities, setQuantities] = useState({});
-    const [orderData,setOrderData] = useState([])
+    const [orderData,setOrderData] = useState()
     const [membername,setMemberName]=useState([])
     const dispatch = useDispatch()
     const history = useHistory()
@@ -27,7 +28,10 @@ const Order = () => {
       { label: 'Dr.Mutto'},
       { label: 'Dr.Marwa'},
       { label: 'Roy' },
-  ]
+    ]
+    console.log(allMember)
+const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiX2lkIjoiNjVlODZiNzZmOTk0ZmQzZTdmNDliMjJiIiwiaWF0IjoxNzA5NzkzMDcwfQ.siBn36zIBe_WmmIfuHMXI6oq4KMJ4dYaWQ6rDyBBtEo"
+
   console.log(membername,"Member name")
 const handleQuantityChange = (itemId, event) => {
   const { value } = event.target;
@@ -66,10 +70,20 @@ const handleOrderSubmit = () => {
   dispatch(sendData({ orderData: newDataWithQuantities,membername}));
      history.push('/Orderpdf');
 };
-
 // dispatch(updateData(newData));
 console.log(orderData,"Cheack here Order Data")
+// ===============================================Member api=============================================================
+const getAllMember = ()=>{
+  axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/member/getAllMember/`,{headers:{token:`${accessToken}`}})
+  .then(res=>{
+    setAllMember(res.data.result)
 
+  })
+}
+
+useEffect(()=>{
+  getAllMember()
+},[])
   return (
     <div className="row">
     <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
@@ -99,10 +113,11 @@ console.log(orderData,"Cheack here Order Data")
 <Autocomplete
                     disablePortal
                     id="combo-box-demo"
-                     options={Member}
+                     options={allMember}
                     sx={{width:550}}
+                    getOptionLabel={(memberName)=>memberName.memberName}
                    onChange={(ev,val)=>{
-                    setMemberName(val.label)
+                    setMemberName(val.memberName)
                    }}
                     renderInput={(params) => <TextField {...params} label="Select member" required/>}
 
@@ -114,12 +129,12 @@ console.log(orderData,"Cheack here Order Data")
   <thead>
     <tr>
       <th scope="col">S.N</th>
-      <th scope="col">Expiry</th>
-      <th scope="col">Item Code</th>
+      {/* <th scope="col">Expiry</th> */}
+      {/* <th scope="col">Item Code</th> */}
       <th scope="col">Lot Number</th>
       <th scope="col">Manufacturer</th>
       <th scope="col">Product Name</th>
-      <th scope="col">Quantity</th>
+      {/* <th scope="col">Quantity</th> */}
       <th scope="col">SKU</th>
       <th scope="col">Required Quantity</th> {/* Assuming you want to add actions */}
     </tr>
@@ -130,12 +145,12 @@ console.log(orderData,"Cheack here Order Data")
       return itemGroup.map((item, itemIndex) => (
         <tr key={itemIndex}>
           <td>{item.id}</td>
-          <td>{item.expiry}</td>
-          <td>{item.itemcode}</td>
+          {/* <td>{item.expiry}</td> */}
+          {/* <td>{item.itemcode}</td> */}
           <td>{item.lotNumber}</td>
           <td>{item.manufacturer}</td>
           <td>{item.productName}</td>
-          <td>{item.quantity}</td>
+          {/* <td>{item.quantity}</td> */}
           <td>{item.sku}</td>
           <td>
             <input

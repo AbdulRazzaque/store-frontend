@@ -12,6 +12,9 @@ import axios from 'axios'
 import Updateproduct from "../components/update/Updateproduct";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from "react-redux";
+import { sendData } from "../components/app/socket/socketActions";
+import { useHistory } from "react-router-dom/cjs/react-router-dom";
 const Addproduct = () => {
   const [display, setDisplay] = React.useState(false);
   const [data,setData]=useState([])
@@ -19,15 +22,17 @@ const Addproduct = () => {
   const [update,setUpdate]=useState([])
   const [showDialog,setShowDialog]=useState(false)
   const [alert, setAlert] = useState(false);
+  const [selectedRows,setSelectedRows]= useState([])
   // ==============================================================================================
   const { register, handleSubmit, formState: { errors } } = useForm();
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiX2lkIjoiNjVlODZiNzZmOTk0ZmQzZTdmNDliMjJiIiwiaWF0IjoxNzA5NzkzMDcwfQ.siBn36zIBe_WmmIfuHMXI6oq4KMJ4dYaWQ6rDyBBtEo"
-
+  const dispatch = useDispatch();
+  const history = useHistory();
 // ===============================================================================================================
   const columns = [
     { field: 'id', headerName: 'S.N', width: 70 },
     { field: 'itemCode', headerName: 'item Code', width: 100 },
-    { field: 'productName', headerName: 'Item description', width: 180 },
+    { field: 'name', headerName: 'Item description', width: 180 },
     { field: 'physicalLocation', headerName: 'Physical location', width: 130 },
     { field: 'sku', headerName: 'S.K.U', width: 130 },
     { field: 'lotNumber', headerName: 'Lot number', width: 130 },
@@ -69,7 +74,7 @@ const Addproduct = () => {
     axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/product/getAllProducts`)
     .then(res=>{
       let arr = res.data.result.map((item,index)=>{
-        const fieldsToCheck = ['supplierName', 'productName', 'sku', 'lotNumber', 'manufacturer', 'physicalLocation', 'unit','addModel'];
+        const fieldsToCheck = ['supplierName', 'name', 'sku', 'lotNumber', 'manufacturer', 'physicalLocation', 'unit','addModel'];
         fieldsToCheck.forEach(field=>{
           if(item.itemCode.includes(item[field])){
             item.itemCode = item.itemCode.replace(item[field],'')
@@ -182,6 +187,19 @@ useEffect(()=>{
 },[])
 
 // console.log(update)
+// ===================================================order  code===============================================================================================================
+
+const labName = 'General'
+const handelClick = ()=>{
+  const dataToSend = selectedRows.map(row=>({
+    ...row,
+    labName:labName
+  }))
+  dispatch(sendData(dataToSend));
+history.push('/Order')
+  // console.log(dataToSend)
+}
+
 // ===================================================JSx code===============================================================================================================
 
   return (
@@ -319,7 +337,7 @@ useEffect(()=>{
               label="Add model"
               variant="outlined"
               sx={{ width: 250 }}
-              required
+              // required
               {...register("addModel", { pattern: /^\S.*\S$/ })}
             />
           </div>
@@ -334,6 +352,16 @@ useEffect(()=>{
               sx={{ width: 250 }}
               required
               {...register("sku", { pattern: /^\S.*\S$/ })}
+            />
+          </div>
+          <div className="col-md-6">
+            <TextField
+              id="outlined-basic"
+              label="department"
+              variant="outlined"
+              sx={{ width: 250 }}
+              // required
+              // {...register("sku", { pattern: /^\S.*\S$/ })}
             />
           </div>
     
@@ -354,8 +382,20 @@ useEffect(()=>{
           }}
           pskuSizeOptions={[5, 10]}
           onRowClick={(item)=>setUpdate(item.row)}
+          checkboxSelection
+          onSelectionModelChange={(ids)=>{
+            const selectedIDs = new Set(ids);
+            const selectedRows = data.filter((row)=>
+            selectedIDs.has(row.id),
+            )
+            setSelectedRows(selectedRows)
+          }}
         />
       </div>
+      <div className="text-center my-5">
+  <Button variant="contained" onClick={handelClick}> Order </Button> 
+    </div>
+
     </form>
 
         <Darkmode/>
@@ -367,7 +407,6 @@ useEffect(()=>{
         changeRoweData={changeRoweData}
         updateRow={updateRow}
         />
-       
         </div>
   )
 }

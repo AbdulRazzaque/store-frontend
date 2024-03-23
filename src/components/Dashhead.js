@@ -16,6 +16,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import AddIcon from '@mui/icons-material/Add';
 import AutoDeleteIcon from '@mui/icons-material/AutoDelete';
+import { Link } from "react-router-dom/cjs/react-router-dom";
 const Dashhead = (props) => {
 
   console.log(props);
@@ -44,7 +45,7 @@ const Dashhead = (props) => {
         ) : (
           <div
             className="menu-container"
-            onClick={() => props.history.push("/")}
+            onClick={() => props.history.push("/Home")}
           >
             <p>
               <DashboardIcon /> Dashboard
@@ -251,9 +252,9 @@ const Dashhead = (props) => {
           </div>
         )}
         <div className="sticky-bottom fixed-bottom ml-1 bt">
-          <Button variant="contained" color="error" style={{ width: "14%" }}>
+       <Link to="/">   <Button variant="contained" color="error" style={{ width: "14%" }}>
             Logout <LogoutIcon className="mx-3" />
-          </Button>
+          </Button></Link>
         </div>
       
       </div>

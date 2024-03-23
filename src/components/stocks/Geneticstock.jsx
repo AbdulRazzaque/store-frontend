@@ -12,6 +12,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useDispatch } from 'react-redux';
 import { sendData } from '../app/socket/socketActions';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from 'axios';
 import moment from 'moment'
 const Geneticstock = () => {
@@ -59,7 +60,7 @@ const handleExport = () => {
 
 // ============================================Get api=================================================================================
 const getGeneticStock=async()=>{
-  axios.get(`${url}/api/stock/getAllStocks`,{headers:{token:accessToken}})
+  axios.get(`${url}/api/stock/getAllStocks/GENETIC`,{headers:{token:accessToken}})
   .then(res=>{
 //  let arr = res.data.result.map(item=>item.product)
 let arr = res.data.result.map((item, index) => {
@@ -74,22 +75,6 @@ let arr = res.data.result.map((item, index) => {
 setData(arr);
 
   console.log(arr)
-  
-    // let arr = res.data.result.map((item,index)=>({...item,id:index+1}))
-    
-    // let arr = res.data.result.map((item=>item.product,index)=>{
-    //   const fieldsToCheck = ['supplierName', 'productName', 'sku', 'lotNumber', 'manufacturer', 'physicalLocation', 'unit','addModel'];
-    //   fieldsToCheck.forEach(field=>{
-    //     if(item.itemCode.includes(item[field])){
-    //       item.itemCode = item.itemCode.replace(item[field],'')
-    //     }
-    //   })
-    //   return {...item, id:index +1}
-    // })
-    // setData(arr)
-    // setData(arr)
-    // let arr = res.data.result.map(item=>item.product)
-    // console.log(arr)
   })
 }
 // ============================================By default  api=================================================================================
@@ -99,6 +84,7 @@ setData(arr);
   },[])
   
   // ================================================End=================================================================================
+  
   return (
     <div className="row">
     <div className="col-xs-12 col-sm-12 col-md-2 col-lg-2 col-xl-2">
@@ -122,6 +108,9 @@ setData(arr);
       genetic  stock
         
         </h1>
+        <div className='icondivright'>
+      <Tooltip title="Back"> <ArrowBackIcon className='exporticon' onClick={()=>{history.push("/stock")}}  /></Tooltip> 
+        </div>
         <div className='icondiv'>
       <Tooltip title="Export in xl"> <GetAppIcon className='exporticon' onClick={handleExport} /></Tooltip> 
         </div>
@@ -134,7 +123,7 @@ setData(arr);
         paginationModel={{
           pageSize: 5,
           page: 0,
-        }}
+        }} 
         pagination={true}
         checkboxSelection
         onSelectionModelChange={(ids)=>{

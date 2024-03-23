@@ -24,6 +24,7 @@ import HPLC from './components/central section/HPLC';
 import AAS from './components/central section/AAS';
 import Order from './pages/Order';
 import Orderpdf from './components/Order/Orderpdf';
+import Login from './components/login/Login';
  export const ThemeContext = createContext();
 function App() {
 
@@ -45,7 +46,7 @@ function App() {
     <CssBaseline />
      <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
         <Switch>
-          <Route exact path="/" component={Home} />
+          <Route exact path="/Home" component={Home} />
           <Route exact path="/Addproduct" component={Addproduct} />
           <Route exact path="/Addmember" component={Addmember} />
           <Route exact path="/Stockin" component={Stockin} />
@@ -70,6 +71,9 @@ function App() {
      {/*====================================Order section ================================================================================ */}
      <Route exact path="/Order" component={Order} />
      <Route exact path="/Orderpdf" component={Orderpdf} />
+
+     {/*====================================login section ================================================================================ */}
+     <Route exact path="/" component={Login} />
 
 
         </Switch>

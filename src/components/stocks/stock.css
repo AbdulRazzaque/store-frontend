@@ -4,7 +4,17 @@ justify-content: flex-end;
 margin-right: 24px;
 bottom: 34px;
 }
+
+
 .exporticon{
     font-size: 34px !important;
     cursor:pointer;
+}
+.icondivright{
+    display:flex;
+justify-content: flex-start;
+margin-right: 24px;
+bottom: 34px;
+    /* background-color: black; */
+    border-radius: 10px;
 }

@@ -6,12 +6,10 @@ import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Dashhead from "../components/Dashhead";
 import Darkmode from '../components/Darkmode';
-import { Autocomplete, Button, Checkbox, Container, FormControlLabel, FormGroup, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
-import { DatePicker, DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { Autocomplete, Checkbox, Container, FormControlLabel, FormGroup, Stack,  TextField } from '@mui/material';
+import {  DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
 import moment from 'moment'
-import dayjs from 'dayjs';
 import axios from 'axios';
 import { DataGrid } from '@mui/x-data-grid';
 const StockInSearch = () => {
@@ -30,23 +28,20 @@ const StockInSearch = () => {
   const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbWluIiwiX2lkIjoiNjVlODZiNzZmOTk0ZmQzZTdmNDliMjJiIiwiaWF0IjoxNzA5NzkzMDcwfQ.siBn36zIBe_WmmIfuHMXI6oq4KMJ4dYaWQ6rDyBBtEo"
 
 // ========================================================================================================================================================
-    const Department = [
-        { label: 'TCGC'},
-        { label: 'Microbiology'},
-        { label: 'Central'},
-        { label: 'Parasitology' },
-    ]
-    const Product = [
-        { label: 'G1243 - Yellow Tip'},
-        { label: 'B343 - 10ml Syringe'},
-        { label: 'C33A Alcohol'},
-        { label: 'M3455 Bioestrovet' },
-    ]
+const department =[
+  {name:'GENETIC'},
+  {name:"MICROBIOLOGY"},
+  {name:"HEAMOTOLGY"},
+  {name:"BIOCHEMISTRY"},
+  {name:"HPLC"},
+  {name:"AAS"},
+  {name:"PARASITOLOGY"},
+  {name:"GENERAL"},
+     
+  
+]
 
-    const rows =[
-        {doc:1,department:'Genetic',itemCode:3423, itemDescription:"Yellow-Tip",quantity:104,expiryDate:'12-2-2025', requestby:'Mustaquim'},
-        {doc:2,department:'Genetic',itemCode:3423, itemDescription:"Yellow-Tip",quantity:1064,expiryDate:'12-2-2025',requestby:'Dr.Ram sing'}
-    ]
+ 
     const columns = [
       { field: 'id', headerName:'No' , width: 70 },
       { field: 'name', headerName:'Products Name' , width: 150 },
@@ -171,10 +166,10 @@ const handleSubmit = ()=>{
    <Autocomplete
                     disablePortal
                     id="combo-box-demo"
-                    getOptionLabel={(member)=>member.label}
-                     options={Department}
+                    getOptionLabel={(member)=>member.name}
+                      options={department}
                      onChange={(event,value)=>{
-                      setSelectedDepartment(value.label)
+                      setSelectedDepartment(value.name)
                      }}
                     sx={{ width: 180 }}
                     renderInput={(params) => <TextField {...params} label="Department" />}
@@ -234,7 +229,7 @@ const handleSubmit = ()=>{
           rows={data}
           columns={columns}
           initialState={{
-            pagination: {
+             pagination: {
               paginationModel: { psku: 0, pskuSize: 5 },
             },
           }}

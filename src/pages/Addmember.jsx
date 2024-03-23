@@ -91,7 +91,7 @@ const onSubmit = async(data,event) => {
     ...data,
   }
   try {
-      const res= await axios.post(`${url}/api/member/createMember`, obj,
+       await axios.post(`${url}/api/member/createMember`, obj,
       {headers:{token:`${accessToken}`}})
       .then(response=>{
       console.log(response, 'res')
@@ -260,10 +260,15 @@ useEffect(()=>{
           label="department"
           onChange={handleChange}
         >
-          <MenuItem value="TCGC">TCGC</MenuItem>
-          <MenuItem value="Microbiology">Microbiology</MenuItem>
-          <MenuItem value="Parasitology">Parasitology</MenuItem>
-          <MenuItem value="Central">Central</MenuItem>
+
+          <MenuItem value="TCGC">GENETIC</MenuItem>
+          <MenuItem value="Microbiology">MICROBIOLOGY</MenuItem>
+          <MenuItem value="Parasitology">HEAMOTOLGY</MenuItem>
+          <MenuItem value="Central">BIOCHEMISTRY</MenuItem>
+          <MenuItem value="Central">HPLC</MenuItem>
+          <MenuItem value="Central">AAS</MenuItem>
+          <MenuItem value="Central">PARASITOLOGY</MenuItem>
+          <MenuItem value="Central">GENERAL</MenuItem>
           {/* <MenuItem value="Parasitology">Histology</MenuItem> */}
         </Select>
       </FormControl>

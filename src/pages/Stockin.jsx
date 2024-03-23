@@ -6,15 +6,16 @@ import Dashhead from "../components/Dashhead";
 import Darkmode from '../components/Darkmode';
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField } from '@mui/material';
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import dayjs from 'dayjs';
+
+
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import moment from 'moment'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 const Stockin = () => {
 
     const [display, setDisplay] = React.useState(false);
@@ -36,17 +37,72 @@ const accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6ImFkbW
 
 // ========================================================================================================================================================
 
-    const Product = [
-        { label: 'G1243 - Yellow Tip'},
-        { label: 'B343 - 10ml Syringe'},
-        { label: 'C33A Alcohol'},
-        { label: 'M3455 Bioestrovet' },
+
+    const department =[
+      {name:'GENETIC'},
+      {name:"MICROBIOLOGY"},
+      {name:"HEAMOTOLGY"},
+      {name:"BIOCHEMISTRY"},
+      {name:"HPLC"},
+      {name:"AAS"},
+      {name:"PARASITOLOGY"},
+      {name:"GENERAL"},
+         
+      
     ]
 
-    const rows =[
-        {doc:1,department:'Genetic',itemCode:3423, itemDescription:"Yellow-Tip",quantity:104,expiryDate:'12-2-2025'},
-        {doc:2,department:'Genetic',itemCode:3423, itemDescription:"Yellow-Tip",quantity:1064,expiryDate:'12-2-2025'}
-    ]
+
+    // ================================================================post api code========================================================================================
+
+const onSubmit = async(data,event) => {
+  var obj={
+    department:selectedDepartment,
+    productName:selectedProduct.productName,
+    itemCode:selectedProduct.itemCode,
+    productId:selectedProduct._id,
+    expiry:selectedExpiry,
+    docNo,
+    ...data
+  }
+try {
+    await axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/stockIn`, {...obj},
+   {headers:{token:`${accessToken}`}})
+   .then(res=>{
+ 
+   setAllStocks([...allStocks,{...obj,_id:res.data.result._id}])
+   toast(res.data.msg,{
+     position: "top-center",
+     autoClose: 5000,
+     hideProgressBar: false,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     theme: "dark",
+   })
+  //  setFlag(!flag)
+  //    event.target.reset();
+ }).catch(error => {
+   toast(error.response.data,{
+     position: "top-right",
+     autoClose: 5000,
+     hideProgressBar: false,
+     closeOnClick: true,
+     pauseOnHover: true,
+     draggable: true,
+     progress: undefined,
+     theme: "dark"
+   })
+ }
+ );
+ // getAlldata()
+} catch (error) {
+   alert(error)
+   
+}
+
+;
+}
 // ==================================================================Get api code=======================================================
 const getAllMember = ()=>{
   axios.get(`${process.env.REACT_APP_DEVELOPMENT}/api/member/getAllMember/`,{headers:{token:`${accessToken}`}})
@@ -95,57 +151,7 @@ useEffect(() => {
  getAllProducts()
 }, [flag]);
 
-// ================================================================post api code========================================================================================
 
-const onSubmit = async(data,event) => {
-     var obj={
-      docNo,
-       department:selectedDepartment.department,
-       productName:selectedProduct.productName,
-       itemCode:selectedProduct.itemCode,
-      productId:selectedProduct._id,
-      expiry:selectedExpiry,
-      ...data
-     }
-  try {
-       await axios.post(`${process.env.REACT_APP_DEVELOPMENT}/api/stock/stockIn`, {...obj},
-      {headers:{token:`${accessToken}`}})
-      .then(res=>{
-
-      setAllStocks([...allStocks,{...obj,_id:res.data.result._id}])
-      toast(res.data.msg,{
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      })
-      setFlag(!flag)
-        event.target.reset();
-    }).catch(error => {
-      toast(error.response.data,{
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark"
-      })
-    }
-    );
-    // getAlldata()
-  } catch (error) {
-      alert(error)
-      
-  }
-  
-;
-}
 // ================================================================open Dialog api & Update code here =====================================================
    const  handleOpenDialog =(rowdata)=>{
     setUpdate(rowdata)
@@ -251,10 +257,10 @@ const handelDeleterow = async(deleteRow)=>{
                      <Autocomplete
                     disablePortal
                     id="combo-box-demo"
-                    getOptionLabel={(member)=>member.department}
-                     options={allMember}
+                    getOptionLabel={(department)=>department.name}
+                     options={department}
                      onChange={(event,value)=>{
-                      setSelectedDepartment(value)
+                      setSelectedDepartment(value.name)
                      }}
                     sx={{ width: 180 }}
                     renderInput={(params) => <TextField {...params} label="Department" />}
@@ -280,11 +286,13 @@ const handelDeleterow = async(deleteRow)=>{
                       />
                       </div>
                     <div className="col-auto"> 
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
                   <DatePicker
                     sx={{ width: 200 }}
                     label="Choose expiry date"
                     value={selectedExpiry}
+                    format="dd-MM-yyy"
+                    views={["year", "month", "day"]}
                     onChange={(newValue) => {
                       setSelectedExpiry(newValue);
                     }}
@@ -329,6 +337,7 @@ const handelDeleterow = async(deleteRow)=>{
                     <TableCell >{row.productName}</TableCell>
                     <TableCell >{row.quantity}</TableCell>
                     <TableCell >{moment.parseZone(row.expiry).local().format("DD/MM/YY")}</TableCell>
+                    {/* <TableCell >{row.expiry}</TableCell> */}
                     {/* <TableCell ><IconButton onClick={()=>{handleOpenDialog(row)}}  ><EditIcon color='primary'  /></IconButton> </TableCell> */}
                     <TableCell ><IconButton > <DeleteIcon color='error'onClick={()=>{handleDeleteDialog(row)}} /> </IconButton></TableCell>
                     </TableRow>
